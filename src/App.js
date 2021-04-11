@@ -1,25 +1,40 @@
-import logo from './logo.svg';
+import { observer } from 'mobx-react-lite';
 import './App.css';
+import Leftbar from './components/left-bar/Leftbar';
+import Navbar from './components/navbar/navbar';
+import store from './store/Store';
+import { toJS } from 'mobx';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Customer from './components/Customer';
+import List from './components/List';
 
-function App() {
+const App = observer(() => {
+  const { categoriesApi } = toJS(store);
+
+  useEffect(() => {
+    store.getData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Leftbar />
+
+        <Switch>
+          <Route path="/" exact>
+            <Navbar {...categoriesApi} />
+          </Route>
+          <Route path="/customer">
+            <Customer />
+          </Route>
+          <Route path="/list">
+            <List />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
-}
+});
 
 export default App;
